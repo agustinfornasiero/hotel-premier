@@ -17,7 +17,7 @@
    		
    		<property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property> <!-- DB Dialect -->
 		
-		<property name="show_sql">true</property> <!-- Show SQL in console, una vez terminado sacar esto -->
+		<!--<property name="show_sql">true</property> Show SQL in console, una vez terminado sacar esto -->
 		
 		<mapping class="dominio.Localidad" />
 		<mapping class="dominio.Provincia" />

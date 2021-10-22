@@ -1,124 +1,131 @@
 package interfaces;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-
-import java.awt.Color;
-import javax.swing.JFormattedTextField;
-import javax.swing.JTextField;
+import java.awt.Font;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-import javax.swing.JEditorPane;
-import java.awt.Panel;
-import java.awt.Font;
-
-
-import javax.swing.table.DefaultTableModel;
-import javax.swing.border.TitledBorder;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import dtos.BusquedaPasajeroDTO;
+import dtos.PasajerosDTO;
+import dtos.TipoDocumentoDTO;
+import gestores.GestorPersona;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 @SuppressWarnings("serial")
-public class BusquedaPasajero extends JFrame {
-
-	private JPanel contentPane;
-	private JTextField txtApellido;
-	private JTextField txtNombre;
-	private JTextField txtNroDocumento;
+public class BusquedaPasajero extends JPanel {
+	private GestorPersona gestorPersona = GestorPersona.getInstance();
+	private JFrame ventana;
+	private JPanel padre;
+	private JLabel lblApellido, lblNombre, lblTipoDocumento, lblNroDocumento;
+	private JTextField txtApellido, txtNombre, txtNroDocumento;
+	private JComboBox<String> cbTipoDocumento;
+	private JButton btnBuscar,btnLimpiar,btnSiguiente,btnCancelar;
+	private Map<String, Integer> tiposDocumentos = new HashMap<String, Integer>();
 	private JTable table;
+	
+	public BusquedaPasajero(JFrame ventana, JPanel padre) {
+		this.ventana = ventana;
+		this.padre = padre;
+		this.setLayout(null);
+		this.armarPanel();
+	}
 
-	/**
-	 * Create the frame.
-	 */
-	public BusquedaPasajero() {
-		setTitle("Buscar Pasajeros");
-		setBackground(Color.LIGHT_GRAY);
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 784, 485);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		Panel BusquedaPasajero = new Panel();
-		BusquedaPasajero.setBounds(10, 10, 748, 130);
-		contentPane.add(BusquedaPasajero);
-		BusquedaPasajero.setLayout(null);
-		
-		JLabel lblApellido = new JLabel("Apellido:");
+	private void armarPanel() {
+		lblApellido = new JLabel("Apellido:");
 		lblApellido.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblApellido.setBounds(10, 11, 62, 14);
-		BusquedaPasajero.add(lblApellido);
+		this.add(lblApellido);
 		
 		txtApellido = new JTextField();
 		txtApellido.setFont(new Font("Tahoma", Font.BOLD, 12));
 		txtApellido.setBounds(138, 8, 200, 20);
-		BusquedaPasajero.add(txtApellido);
-		txtApellido.setColumns(10);
-		
-		JLabel lblTipoDocumento = new JLabel("Tipo de Documento:");
-		lblTipoDocumento.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblTipoDocumento.setBounds(10, 59, 131, 14);
-		BusquedaPasajero.add(lblTipoDocumento);
-		
-		JComboBox cbTipoDocumento = new JComboBox();
-		cbTipoDocumento.setFont(new Font("Tahoma", Font.BOLD, 12));
-		cbTipoDocumento.setBounds(138, 55, 200, 24);
-		BusquedaPasajero.add(cbTipoDocumento);
-		
-		JLabel lblNombre = new JLabel("Nombre:");
+		this.add(txtApellido);
+
+		lblNombre = new JLabel("Nombre:");
 		lblNombre.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblNombre.setBounds(385, 11, 69, 14);
-		BusquedaPasajero.add(lblNombre);
+		this.add(lblNombre);
 		
 		txtNombre = new JTextField();
 		txtNombre.setFont(new Font("Tahoma", Font.BOLD, 12));
 		txtNombre.setBounds(538, 8, 200, 20);
-		BusquedaPasajero.add(txtNombre);
-		txtNombre.setColumns(10);
+		this.add(txtNombre);
 		
-		JLabel lblNroDocumento = new JLabel("Numero de Documento:");
+		lblTipoDocumento = new JLabel("Tipo de Documento:");
+		lblTipoDocumento.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblTipoDocumento.setBounds(10, 59, 131, 14);
+		this.add(lblTipoDocumento);
+		
+		cbTipoDocumento = new JComboBox<String>();
+		cbTipoDocumento.setFont(new Font("Tahoma", Font.BOLD, 12));
+		cbTipoDocumento.setBounds(138, 55, 200, 24);
+		this.add(cbTipoDocumento);
+		llenarComboBoxTipoDocumentos();
+		
+		lblNroDocumento = new JLabel("Numero de Documento:");
 		lblNroDocumento.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblNroDocumento.setBounds(385, 59, 157, 14);
-		BusquedaPasajero.add(lblNroDocumento);
+		this.add(lblNroDocumento);
 		
 		txtNroDocumento = new JTextField();
 		txtNroDocumento.setFont(new Font("Tahoma", Font.BOLD, 12));
 		txtNroDocumento.setBounds(538, 57, 200, 20);
-		BusquedaPasajero.add(txtNroDocumento);
-		txtNroDocumento.setColumns(10);
+		this.add(txtNroDocumento);
 		
-		JButton btnBuscar = new JButton("Buscar");
-		btnBuscar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+		btnBuscar = new JButton("Buscar");
+		btnBuscar.addActionListener(
+				e -> {
+					String apellido = txtApellido.getText();
+					String nombre = txtNombre.getText();
+					String nroDocumento = txtNroDocumento.getText();
+					String tipoDoc = (String) cbTipoDocumento.getSelectedItem();
+					int idDoc = tiposDocumentos.get(tipoDoc);
+					BusquedaPasajeroDTO dto = new BusquedaPasajeroDTO(apellido,nombre,idDoc,nroDocumento);
+					PasajerosDTO pasajeros = gestorPersona.buscarPasajerosSegunCriterio(dto);
+					if(pasajeros != null) {
+						llenarTable(pasajeros);
+					}
+				}
+		);
 		btnBuscar.setBounds(548, 96, 89, 23);
-		BusquedaPasajero.add(btnBuscar);
+		this.add(btnBuscar);
 		
-		JButton btnLimpiar = new JButton("Limpiar");
+		btnLimpiar = new JButton("Limpiar");
 		btnLimpiar.setBounds(649, 96, 89, 23);
-		BusquedaPasajero.add(btnLimpiar);
-		JButton btnSiguiente = new JButton("Siguiente");
-		btnSiguiente.setBounds(570, 412, 89, 23);
-		contentPane.add(btnSiguiente);
+		this.add(btnLimpiar);
+		btnLimpiar.addActionListener(
+				e -> {
+					txtApellido.setText("");
+					txtNombre.setText("");
+					txtNroDocumento.setText("");
+				}
+		);
 		
-		JButton btnCancelar = new JButton("Cancelar");
+		btnSiguiente = new JButton("Siguiente");
+		btnSiguiente.setBounds(570, 412, 89, 23);
+		this.add(btnSiguiente);
+		
+		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setBounds(669, 412, 89, 23);
-		contentPane.add(btnCancelar);
+		this.add(btnCancelar);
+		btnCancelar.addActionListener(
+				e -> {
+					ventana.setContentPane(padre);
+					ventana.pack();
+					ventana.setVisible(true);
+				}
+		);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 162, 748, 229);
-		contentPane.add(scrollPane);
+		this.add(scrollPane);
 		
 		table = new JTable();
 		scrollPane.setViewportView(table);
@@ -147,35 +154,28 @@ public class BusquedaPasajero extends JFrame {
 		table.getColumnModel().getColumn(1).setPreferredWidth(90);
 		table.getColumnModel().getColumn(2).setPreferredWidth(90);
 		table.getColumnModel().getColumn(3).setPreferredWidth(90);
-	;
-		//textField.setColumns(10); Me tira Error!
-	
-	//Acciones de los botones
-	//Botón cancelar
-	btnCancelar.addActionListener(e -> 
-	{
-		Object[] opciones = {"No", "Sí"};
-		
-		if 
-		(	
-			opciones
-			[JOptionPane.showOptionDialog(
-				BusquedaPasajero.this, 
-				"¿Desea cancelar la operación?", 
-				"", 
-				JOptionPane.DEFAULT_OPTION, 
-				JOptionPane.QUESTION_MESSAGE, 
-				null, 
-				opciones,
-				opciones[0]
-			)] == opciones[1]
-		)
-			this.setVisible(false);
-			
-		
-		// TODO: volver al menu anterior
-	});
-	
 	}
-	
+
+	private void llenarComboBoxTipoDocumentos() {
+		List<TipoDocumentoDTO> listasDoc = gestorPersona.getTiposDocumentos();
+		cbTipoDocumento.removeAllItems();
+		listasDoc.sort((t1,t2) -> t1.getNombre().compareTo(t2.getNombre()));
+		for(TipoDocumentoDTO unTipoDoc : listasDoc) {
+			cbTipoDocumento.addItem(unTipoDoc.getNombre());
+			tiposDocumentos.put(unTipoDoc.getNombre(), unTipoDoc.getId());
+		}
+	}
+
+	private void llenarTable(PasajerosDTO pasajeros) {
+		String[] columnNames = {"Apellido", "Nombre", "Tipo Documento", "Nro. Documento"};
+		Object[][] data = new Object[pasajeros.getPasajeros().size()][columnNames.length];
+		for(int i = 0; i < pasajeros.getPasajeros().size() ;i++) {
+			data[i][0] = pasajeros.getPasajeros().get(i).getApellido();
+			data[i][1] = pasajeros.getPasajeros().get(i).getNombre();
+			data[i][2] = pasajeros.getPasajeros().get(i).getTipoDocumento();
+			data[i][3] = pasajeros.getPasajeros().get(i).getDocumento();
+		}
+		DefaultTableModel modelo = new DefaultTableModel(data, columnNames);
+		table.setModel(modelo);
+	}
 }

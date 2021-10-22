@@ -2,6 +2,8 @@ package interfaces;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -12,6 +14,7 @@ import javax.swing.border.EmptyBorder;
 import dominio.Pais;
 import dominio.PosicionFrenteIVA;
 import dominio.TipoDocumento;
+import gestores.GestorPersona;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -23,9 +26,12 @@ import javax.swing.JButton;
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 
-public class AltaPasajero extends JFrame {
+public class AltaPasajero extends JPanel {
 
-	private JPanel contentPane;
+	private JFrame ventana;
+	private JPanel padre;
+	private GestorPersona gestorPersona = GestorPersona.getInstance();
+	private GridBagConstraints gbc;
 	private JTextField txtApellido;
 	private JTextField txtCalle;
 	private JTextField txtDepartamento;
@@ -44,15 +50,18 @@ public class AltaPasajero extends JFrame {
 	private JComboBox<TipoDocumento> cbTipoDocumento;
 	private JComboBox<PosicionFrenteIVA> cbPosFrenteIVA;
 	private JComboBox<Pais> cbPais;
-	private JDateChooser dateChooser;
+//	private JDateChooser dateChooser;
 
-	/**
-	 * Create the frame.
-	 */
-	public AltaPasajero() {
-		setTitle("Alta de Pasajero");
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 818, 501);
+	
+	public AltaPasajero(JFrame ventana, JPanel padre) {
+		this.ventana = ventana;
+		this.padre = padre;
+		gbc = new GridBagConstraints();
+		this.setLayout(new GridBagLayout());
+		this.armarPanel();
+	}
+	
+	public void armarPanel() {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -242,9 +251,9 @@ public class AltaPasajero extends JFrame {
 		lblInfo.setBounds(10, 415, 159, 14);
 		panel.add(lblInfo);
 		
-		JDateChooser dateChooser = new JDateChooser();
-		dateChooser.setBounds(152, 115, 189, 20);
-		panel.add(dateChooser);
+//		JDateChooser dateChooser = new JDateChooser();
+//		dateChooser.setBounds(152, 115, 189, 20);
+//		panel.add(dateChooser);
 		
 		//Acciones de los botones
 		
@@ -306,9 +315,9 @@ public class AltaPasajero extends JFrame {
 			JOptionPane.showMessageDialog(AltaPasajero.this, "El campo CUIT es requerido.");
 		}
 		//VER FECHA NACIMIENTO
-		if(dateChooser.getDate() == null) {
-			JOptionPane.showMessageDialog(AltaPasajero.this, "Debe seleccionar una Posición en IVA. Es campo requerido.");
-		}
+//		if(dateChooser.getDate() == null) {
+//			JOptionPane.showMessageDialog(AltaPasajero.this, "Debe seleccionar una Posición en IVA. Es campo requerido.");
+//		}
 		if(txtCalle.getText().isBlank()) {
 			JOptionPane.showMessageDialog(AltaPasajero.this, "El campo Calle es requerido.");
 		}

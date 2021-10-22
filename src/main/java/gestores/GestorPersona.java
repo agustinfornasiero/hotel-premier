@@ -18,6 +18,7 @@ import dtos.AltaPasajeroDTO;
 import dtos.BusquedaPasajeroDTO;
 import dtos.PasajeroDTO;
 import dtos.PasajerosDTO;
+import dtos.TipoDocumentoDTO;
 import excepciones.DatosNoValidosException;
 import excepciones.ExistePasajeroException;
 
@@ -113,5 +114,16 @@ public final class GestorPersona {
 		    if(!mat.find()) return false;
 		}
 		return true;
+	}
+
+	public List<TipoDocumentoDTO> getTiposDocumentos() {
+		personaFactory = PersonaFactoryDao.getFactory(PersonaFactoryDao.POSTGRESQL_FACTORY);
+		personaDao = personaFactory.getPersonaDAO();
+		List<TipoDocumento> listaDocumentos = personaDao.getAllTipoDocumentos();
+		List<TipoDocumentoDTO> listaDocumentosDTO = new ArrayList<TipoDocumentoDTO>();
+		for(TipoDocumento tipo : listaDocumentos) {
+			listaDocumentosDTO.add(new TipoDocumentoDTO(tipo.getId(), tipo.getNombre()));
+		}
+		return listaDocumentosDTO;
 	}
 }

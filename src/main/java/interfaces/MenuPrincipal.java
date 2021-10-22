@@ -1,12 +1,14 @@
 package interfaces;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.GridBagConstraints;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import util.HibernateUtil;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -15,14 +17,156 @@ import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import java.awt.Toolkit;
 
-public class MenuPrincipal extends JFrame {
+@SuppressWarnings("serial")
+public class MenuPrincipal extends JPanel {
+	private JFrame ventana;
+	private GridBagConstraints gbc;
 
-	private JPanel contentPane;
+	public MenuPrincipal(JFrame ventana) {
+		this.ventana = ventana;
+		gbc = new GridBagConstraints();
+		this.setLayout(new GridBagLayout());
+		this.armarPanel();
+		HibernateUtil.getSession();
+	}
+
+	private void armarPanel() {
+		JLabel lblUsername = new JLabel("USERNAME");
+		lblUsername.setFont(new Font("Serif", Font.BOLD, 16));
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblUsername, gbc);
+		gbc.anchor = GridBagConstraints.CENTER;
+		
+		JButton btnGestionPasajero = new JButton("Gestionar Pasajero");
+		btnGestionPasajero.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/icons/GestionarPasajero.png")));
+		btnGestionPasajero.setFont(new Font("Dialog", Font.BOLD, 14));
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(btnGestionPasajero, gbc);
+		btnGestionPasajero.addActionListener(
+				e -> {
+					ventana.setContentPane(new BusquedaPasajero(ventana, this));
+					ventana.setVisible(true);
+				}
+		);
+		
+		JButton btnGestionarRespPago = new JButton("Gestionar Responsable Pago");
+		btnGestionarRespPago.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/icons/ResponsablePago.png")));
+		btnGestionarRespPago.setFont(new Font("Dialog", Font.BOLD, 14));
+		gbc.gridx = 2;
+		gbc.gridy = 1;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(btnGestionarRespPago, gbc);
+		
+		JButton btnFacturar = new JButton("Facturar");
+		btnFacturar.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/icons/Factura.png")));
+		btnFacturar.setFont(new Font("Dialog", Font.BOLD, 14));
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(btnFacturar, gbc);
+		
+		JButton btnReservarHab = new JButton("Reservar Habitaci\u00F3n");
+		btnReservarHab.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/icons/ReservarHabitacion.png")));
+		btnReservarHab.setFont(new Font("Dialog", Font.BOLD, 14));
+		gbc.gridx = 2;
+		gbc.gridy = 2;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(btnReservarHab, gbc);
+		
+		JButton btnOcuparHab = new JButton("Ocupar Habitaci\u00F3n");
+		btnOcuparHab.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/icons/OcuparHabitacion.png")));
+		btnOcuparHab.setFont(new Font("Dialog", Font.BOLD, 14));
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(btnOcuparHab, gbc);
+		
+		JButton btnIngresarPago = new JButton("Ingresar Pago");
+		btnIngresarPago.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/icons/IngresarPago.png")));
+		btnIngresarPago.setFont(new Font("Dialog", Font.BOLD, 14));
+		gbc.gridx = 2;
+		gbc.gridy = 3;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(btnIngresarPago, gbc);
+		
+		JButton btnIngresarNC = new JButton("Ingresar Nota de Cr\u00E9dito");
+		btnIngresarNC.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/icons/NotadeCredito.png")));
+		btnIngresarNC.setFont(new Font("Dialog", Font.BOLD, 14));
+		gbc.gridx = 0;
+		gbc.gridy = 4;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(btnIngresarNC, gbc);
+		
+		JButton btnCancelarReserva = new JButton("Cancelar Reserva");
+		btnCancelarReserva.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/icons/CancelarReserva.png")));
+		btnCancelarReserva.setFont(new Font("Dialog", Font.BOLD, 14));
+		gbc.gridx = 2;
+		gbc.gridy = 4;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(btnCancelarReserva, gbc);
+		
+		JButton btnListarCheques = new JButton("Listar Cheques");
+		btnListarCheques.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/icons/ListarCheques.png")));
+		btnListarCheques.setFont(new Font("Tahoma", Font.BOLD, 14));
+		gbc.gridx = 0;
+		gbc.gridy = 5;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(btnListarCheques, gbc);
+		
+		JButton btnListarIngresos = new JButton("Listar Ingresos");
+		btnListarIngresos.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/icons/ListarIngresos.png")));
+		btnListarIngresos.setFont(new Font("Tahoma", Font.BOLD, 14));
+		gbc.gridx = 2;
+		gbc.gridy = 5;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(btnListarIngresos, gbc);
+		
+		JButton btnSalir = new JButton("Salir");
+		btnSalir.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/icons/LogOut.png")));
+		btnSalir.setFont(new Font("Dialog", Font.BOLD, 14));
+		gbc.gridx = 1;
+		gbc.gridy = 6;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(btnSalir, gbc);
+		btnSalir.addActionListener(
+				e -> {
+					//Retorna a la interfaz de autenticar usuarios
+				}
+		);
+	}
 	
-	/**
-	 * Create the frame.
-	 */
-	public MenuPrincipal() {
+	
+/*	public MenuPrincipal() {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(MenuPrincipal.class.getResource("/icons/HotelPremier.png")));
 		setResizable(false);
 		setTitle("Hotel Premier - Men\u00FA Principal");
@@ -139,5 +283,5 @@ public class MenuPrincipal extends JFrame {
 				System.exit(0);  // TODO: volver al menu anterior
 		});
 	
-	}
+	}*/
 }
