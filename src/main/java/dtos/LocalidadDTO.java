@@ -1,12 +1,14 @@
 package dtos;
 
-public class TipoDocumentoDTO {
+public class LocalidadDTO {
 	private int id;
 	private String nombre;
+	private String codigoPostal;
 
-	public TipoDocumentoDTO(int id, String nombre) {
+	public LocalidadDTO(int id, String nombre, String codigoPostal) {
 		this.id = id;
 		this.nombre = nombre;
+		this.codigoPostal = codigoPostal;
 	}
 
 	public int getId() {
@@ -15,6 +17,10 @@ public class TipoDocumentoDTO {
 
 	public String getNombre() {
 		return nombre;
+	}
+
+	public String getCodigoPostal() {
+		return codigoPostal;
 	}
 
 	@Override

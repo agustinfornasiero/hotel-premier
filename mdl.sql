@@ -35,11 +35,15 @@ VALUES
 	('Santa Fe',1),
 	('Santiago del Estero',1),
 	('Tierra del Fuego',1),
-	('Tucumán',1);
+	('Tucumán',1),
+	('Arica',4),
+	('Santiago',4);
 
 --Inserts tabla localidad
 INSERT INTO localidad (nombre, codigo_postal, id_provincia)
 VALUES
+	('Santiago','8320000',25),
+	('San Marcos de Arica','1000000',24),
 	('22 de Mayo', '2124', 20),
 	('4 de Febrero', '2732', 20),
 	('Acebal', '2109', 20),

@@ -1,10 +1,10 @@
 package dtos;
 
-public class TipoDocumentoDTO {
+public class PosicionFrenteIvaDTO {
 	private int id;
 	private String nombre;
 
-	public TipoDocumentoDTO(int id, String nombre) {
+	public PosicionFrenteIvaDTO(int id, String nombre) {
 		this.id = id;
 		this.nombre = nombre;
 	}

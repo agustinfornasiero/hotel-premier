@@ -1,56 +1,63 @@
 package interfaces;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.MaskFormatter;
 
-import dominio.Pais;
-import dominio.PosicionFrenteIVA;
-import dominio.TipoDocumento;
+import dtos.LocalidadDTO;
+import dtos.PaisDTO;
+import dtos.PosicionFrenteIvaDTO;
+import dtos.ProfesionDTO;
+import dtos.ProvinciaDTO;
+import dtos.TipoDocumentoDTO;
+import gestores.GestorGeografico;
 import gestores.GestorPersona;
+import util.UppercaseDocumentFilter;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
-
-import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 
+
+@SuppressWarnings("serial")
 public class AltaPasajero extends JPanel {
 
 	private JFrame ventana;
 	private JPanel padre;
 	private GestorPersona gestorPersona = GestorPersona.getInstance();
+	private GestorGeografico gestorGeografico = GestorGeografico.getInstance();
 	private GridBagConstraints gbc;
-	private JTextField txtApellido;
-	private JTextField txtCalle;
-	private JTextField txtDepartamento;
-	private JTextField txtLocalidad;
-	private JTextField txtTelefono;
-	private JTextField txtOcupacion;
-	private JTextField txtNombre;
-	private JTextField txtNroDocumento;
-	private JTextField txtCuit;
-	private JTextField txtNumero;
-	private JTextField txtPiso;
-	private JTextField txtProvincia;
-	private JTextField txtCodPostal;
-	private JTextField txtEmail;
-	private JTextField txtNacionalidad;
-	private JComboBox<TipoDocumento> cbTipoDocumento;
-	private JComboBox<PosicionFrenteIVA> cbPosFrenteIVA;
-	private JComboBox<Pais> cbPais;
-//	private JDateChooser dateChooser;
+	private JLabel lblApellido, lblNombre,lblTipoDocumento,lblNroDocumento,lblPosicionIVA,lblCUIT,lblFechaNac,lblCalle,lblNumero,lblDepto,lblPiso,lblPais,lblProvincia,lblLocalidad,
+		lblCodigoPostal,lblTelefono,lblEmail,lblOcupacion,lblNacionalidad;
+	private JTextField txtApellido,txtCalle,txtDepartamento,txtTelefono,txtNombre,txtNroDocumento,txtNumero,txtPiso,txtCodPostal,txtEmail,txtNacionalidad;
+	JFormattedTextField txtCuit;
+	private JComboBox<TipoDocumentoDTO> cbTipoDocumento;
+	private JComboBox<PosicionFrenteIvaDTO> cbPosFrenteIVA;
+	private JComboBox<PaisDTO> cbPais;
+	private JComboBox<ProvinciaDTO> cbProvincia;
+	private JComboBox<LocalidadDTO> cbLocalidad;
+	private JComboBox<ProfesionDTO> cbOcupacion;
+	private JDateChooser fechaNac;
+	private JButton btnSiguiente, btnCancelar;
+	MaskFormatter mascaraCuit = null;
 
 	
 	public AltaPasajero(JFrame ventana, JPanel padre) {
@@ -62,200 +69,439 @@ public class AltaPasajero extends JPanel {
 	}
 	
 	public void armarPanel() {
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		DocumentFilter filter = new UppercaseDocumentFilter();
 		
-		String title = "Alta Pasajero";
-		Border border = BorderFactory.createTitledBorder(title);
-		//AltaPasajero.setBorder(border);
-		
-		JPanel panel = new JPanel();
-		panel.setBounds(10, 11, 782, 440);
-		contentPane.add(panel);
-		panel.setLayout(null);
-		
-		JLabel lblApellido = new JLabel("Apellido (*):");
-		lblApellido.setBounds(10, 11, 73, 14);
-		panel.add(lblApellido);
+		lblApellido = new JLabel("Apellido (*)");
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblApellido, gbc);
 		
 		txtApellido = new JTextField();
-		txtApellido.setBounds(152, 8, 189, 20);
-		panel.add(txtApellido);
-		txtApellido.setColumns(10);
+		((AbstractDocument) txtApellido.getDocument()).setDocumentFilter(filter);
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(txtApellido,gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
 		
-		JLabel lblTipoDocumento = new JLabel("Tipo Documento (*):");
-		lblTipoDocumento.setBounds(10, 47, 117, 14);
-		panel.add(lblTipoDocumento);
-		
-		JComboBox cbTipoDocumento = new JComboBox();
-		cbTipoDocumento.setBounds(152, 39, 189, 24);
-		panel.add(cbTipoDocumento);
-		
-		JLabel lblPosFrenteIVA = new JLabel("Posicion Frente IVA (*):");
-		lblPosFrenteIVA.setBounds(10, 85, 131, 14);
-		panel.add(lblPosFrenteIVA);
-		
-		JComboBox cbPosFrenteIVA = new JComboBox();
-		cbPosFrenteIVA.setBounds(152, 80, 189, 24);
-		panel.add(cbPosFrenteIVA);
-		
-		JLabel lblFechaNac = new JLabel("Fecha  Nacimiento (*):");
-		lblFechaNac.setBounds(10, 120, 131, 14);
-		panel.add(lblFechaNac);
-		
-		JLabel lblCalle = new JLabel("Calle (*):");
-		lblCalle.setBounds(10, 166, 58, 14);
-		panel.add(lblCalle);
-		
-		txtCalle = new JTextField();
-		txtCalle.setBounds(152, 163, 189, 20);
-		panel.add(txtCalle);
-		txtCalle.setColumns(10);
-		
-		JLabel lblDepartamento = new JLabel("Departamento:");
-		lblDepartamento.setBounds(10, 208, 98, 14);
-		panel.add(lblDepartamento);
-		
-		txtDepartamento = new JTextField();
-		txtDepartamento.setBounds(152, 205, 189, 20);
-		panel.add(txtDepartamento);
-		txtDepartamento.setColumns(10);
-		
-		JLabel lblPais = new JLabel("Pais (*):");
-		lblPais.setBounds(10, 246, 58, 14);
-		panel.add(lblPais);
-		
-		JComboBox cbPais = new JComboBox();
-		cbPais.setBounds(152, 241, 189, 24);
-		panel.add(cbPais);
-		
-		JLabel lblLocalidad = new JLabel("Localidad (*):");
-		lblLocalidad.setBounds(10, 288, 86, 14);
-		panel.add(lblLocalidad);
-		
-		txtLocalidad = new JTextField();
-		txtLocalidad.setBounds(152, 285, 189, 20);
-		panel.add(txtLocalidad);
-		txtLocalidad.setColumns(10);
-		
-		JLabel lblTelefono = new JLabel("Tel\u00E9fono (*):");
-		lblTelefono.setBounds(10, 331, 86, 14);
-		panel.add(lblTelefono);
-		
-		txtTelefono = new JTextField();
-		txtTelefono.setBounds(152, 328, 189, 20);
-		panel.add(txtTelefono);
-		txtTelefono.setColumns(10);
-		
-		JLabel lblOcupacion = new JLabel("Ocupaci\u00F3n (*):");
-		lblOcupacion.setBounds(10, 372, 98, 14);
-		panel.add(lblOcupacion);
-		
-		txtOcupacion = new JTextField();
-		txtOcupacion.setBounds(152, 369, 189, 20);
-		panel.add(txtOcupacion);
-		txtOcupacion.setColumns(10);
-		
-		JLabel lblNewLabel = new JLabel("Nombre (*):");
-		lblNewLabel.setBounds(433, 14, 73, 14);
-		panel.add(lblNewLabel);
+		lblNombre = new JLabel("Nombre (*)");
+		gbc.gridx = 3;
+		gbc.gridy = 0;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblNombre, gbc);
 		
 		txtNombre = new JTextField();
-		txtNombre.setBounds(559, 8, 189, 20);
-		panel.add(txtNombre);
-		txtNombre.setColumns(10);
+		((AbstractDocument) txtNombre.getDocument()).setDocumentFilter(filter);
+		gbc.gridx = 4;
+		gbc.gridy = 0;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(txtNombre,gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
 		
-		JLabel lblNroDocumento = new JLabel("N\u00FAmero Documento (*):");
-		lblNroDocumento.setBounds(425, 47, 124, 14);
-		panel.add(lblNroDocumento);
+		lblTipoDocumento = new JLabel("Tipo Documento (*)");
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblTipoDocumento,gbc);
+		
+		cbTipoDocumento = new JComboBox<TipoDocumentoDTO>();
+		gbc.gridx = 1;
+		gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(cbTipoDocumento,gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
+		llenarComboBoxTipoDocumentos();
+		cbTipoDocumento.setSelectedIndex(1);
+		
+		lblNroDocumento = new JLabel("N\u00FAmero Documento (*)");
+		gbc.gridx = 3;
+		gbc.gridy = 1;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblNroDocumento,gbc);
 		
 		txtNroDocumento = new JTextField();
-		txtNroDocumento.setBounds(559, 44, 189, 20);
-		panel.add(txtNroDocumento);
-		txtNroDocumento.setColumns(10);
+		((AbstractDocument) txtNroDocumento.getDocument()).setDocumentFilter(filter);
+		gbc.gridx = 4;
+		gbc.gridy = 1;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(txtNroDocumento,gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
 		
-		JLabel lblCUIT = new JLabel("CUIT (*):");
-		lblCUIT.setBounds(433, 85, 58, 14);
-		panel.add(lblCUIT);
+		lblPosicionIVA = new JLabel("Posicion Frente IVA");
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblPosicionIVA,gbc);
 		
-		txtCuit = new JTextField();
-		txtCuit.setBounds(559, 82, 189, 20);
-		panel.add(txtCuit);
-		txtCuit.setColumns(10);
+		cbPosFrenteIVA = new JComboBox<PosicionFrenteIvaDTO>();
+		gbc.gridx = 1;
+		gbc.gridy = 2;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(cbPosFrenteIVA,gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
 		
-		JLabel lblNumero = new JLabel("N\u00FAmero (*):");
-		lblNumero.setBounds(433, 166, 73, 14);
-		panel.add(lblNumero);
+		lblCUIT = new JLabel("CUIT");
+		gbc.gridx = 3;
+		gbc.gridy = 2;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblCUIT,gbc);
+		
+		try {
+			mascaraCuit = new MaskFormatter("##-########-#");
+			mascaraCuit.setPlaceholderCharacter('9');
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		txtCuit = new JFormattedTextField(mascaraCuit);
+		gbc.gridx = 4;
+		gbc.gridy = 2;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(txtCuit,gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
+		
+		lblFechaNac = new JLabel("Fecha de Nacimiento (*):");
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblFechaNac, gbc);
+		
+		fechaNac = new JDateChooser("dd/MM/yyyy","##/##/####",'_');
+		fechaNac.getJCalendar().setMaxSelectableDate(new Date());
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.gridx = 1;
+		gbc.gridy = 3;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(fechaNac,gbc);
+		gbc.anchor = GridBagConstraints.CENTER;
+		
+		lblCalle = new JLabel("Calle (*)");
+		gbc.gridx = 0;
+		gbc.gridy = 4;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblCalle,gbc);
+		
+		txtCalle = new JTextField();
+		((AbstractDocument) txtCalle.getDocument()).setDocumentFilter(filter);
+		gbc.gridx = 1;
+		gbc.gridy = 4;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(txtCalle,gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
+		
+		lblNumero = new JLabel("N\u00FAmero (*)");
+		gbc.gridx = 3;
+		gbc.gridy = 4;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblNumero,gbc);
 		
 		txtNumero = new JTextField();
-		txtNumero.setBounds(559, 163, 189, 20);
-		panel.add(txtNumero);
-		txtNumero.setColumns(10);
+		((AbstractDocument) txtNumero.getDocument()).setDocumentFilter(filter);
+		gbc.gridx = 4;
+		gbc.gridy = 4;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(txtNumero,gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
 		
-		JLabel lblPiso = new JLabel("Piso:");
-		lblPiso.setBounds(433, 208, 46, 14);
-		panel.add(lblPiso);
+		lblDepto = new JLabel("Departamento");
+		gbc.gridx = 0;
+		gbc.gridy = 5;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblDepto,gbc);
+		
+		txtDepartamento = new JTextField();
+		((AbstractDocument) txtDepartamento.getDocument()).setDocumentFilter(filter);
+		gbc.gridx = 1;
+		gbc.gridy = 5;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(txtDepartamento, gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
+		
+		lblPiso = new JLabel("Piso");
+		gbc.gridx = 3;
+		gbc.gridy = 5;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblPiso,gbc);
 		
 		txtPiso = new JTextField();
-		txtPiso.setBounds(559, 205, 189, 20);
-		panel.add(txtPiso);
-		txtPiso.setColumns(10);
+		((AbstractDocument) txtPiso.getDocument()).setDocumentFilter(filter);
+		gbc.gridx = 4;
+		gbc.gridy = 5;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(txtPiso,gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
 		
-		JLabel lblProvincia = new JLabel("Provincia (*):");
-		lblProvincia.setBounds(433, 246, 73, 14);
-		panel.add(lblProvincia);
+		lblPais = new JLabel("Pais (*)");
+		gbc.gridx = 0;
+		gbc.gridy = 6;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblPais,gbc);
 		
-		txtProvincia = new JTextField();
-		txtProvincia.setBounds(559, 243, 189, 20);
-		panel.add(txtProvincia);
-		txtProvincia.setColumns(10);
+		cbPais = new JComboBox<PaisDTO>();
+		gbc.gridx = 1;
+		gbc.gridy = 6;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(cbPais,gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
+		llenarComboBoxPais();
+		cbPais.addActionListener(
+				e -> {
+					llenarComboBoxProvincias((PaisDTO) cbPais.getSelectedItem());
+				}
+		);
 		
-		JLabel lblCodPostal = new JLabel("C\u00F3digo Postal (*):");
-		lblCodPostal.setBounds(433, 288, 98, 14);
-		panel.add(lblCodPostal);
+		lblProvincia = new JLabel("Provincia (*)");
+		gbc.gridx = 3;
+		gbc.gridy = 6;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblProvincia,gbc);
+		
+		cbProvincia = new JComboBox<ProvinciaDTO>();
+		gbc.gridx = 4;
+		gbc.gridy = 6;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(cbProvincia,gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
+	/*	llenarComboBoxProvincias((PaisDTO) cbPais.getSelectedItem());
+		cbProvincia.setSelectedIndex(19);
+		cbProvincia.addActionListener(
+				e -> {
+					llenarComboBoxLocalidades((ProvinciaDTO) cbProvincia.getSelectedItem());
+				}
+		);*/
+		
+		lblLocalidad = new JLabel("Localidad (*)");
+		gbc.gridx = 0;
+		gbc.gridy = 7;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblLocalidad,gbc);
+		
+		cbLocalidad = new JComboBox<LocalidadDTO>();
+		gbc.gridx = 1;
+		gbc.gridy = 7;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(cbLocalidad, gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
+		//llenarComboBoxLocalidades((ProvinciaDTO) cbProvincia.getSelectedItem());
+
+		lblCodigoPostal = new JLabel("C\u00F3digo Postal (*)");
+		gbc.gridx = 3;
+		gbc.gridy = 7;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblCodigoPostal,gbc);
 		
 		txtCodPostal = new JTextField();
-		txtCodPostal.setBounds(559, 285, 189, 20);
-		panel.add(txtCodPostal);
-		txtCodPostal.setColumns(10);
+		txtCodPostal.setEditable(false);
+		gbc.gridx = 4;
+		gbc.gridy = 7;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(txtCodPostal,gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
 		
-		JLabel lblEmail = new JLabel("Email:");
-		lblEmail.setBounds(433, 331, 46, 14);
-		panel.add(lblEmail);
+		lblTelefono = new JLabel("Tel\u00E9fono (*)");
+		gbc.gridx = 0;
+		gbc.gridy = 8;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblTelefono,gbc);
+		
+		txtTelefono = new JTextField();
+		((AbstractDocument) txtTelefono.getDocument()).setDocumentFilter(filter);
+		gbc.gridx = 1;
+		gbc.gridy = 8;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(txtTelefono,gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
+		
+		lblEmail = new JLabel("Email");
+		gbc.gridx = 3;
+		gbc.gridy = 8;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblEmail,gbc);
 		
 		txtEmail = new JTextField();
-		txtEmail.setBounds(559, 328, 189, 20);
-		panel.add(txtEmail);
-		txtEmail.setColumns(10);
+		((AbstractDocument) txtEmail.getDocument()).setDocumentFilter(filter);
+		gbc.gridx = 4;
+		gbc.gridy = 8;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(txtEmail,gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
 		
-		JLabel lblNacionalidad = new JLabel("Nacionalidad (*):");
-		lblNacionalidad.setBounds(433, 372, 98, 14);
-		panel.add(lblNacionalidad);
+		lblOcupacion = new JLabel("Ocupaci\u00F3n (*)");
+		gbc.gridx = 0;
+		gbc.gridy = 9;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblOcupacion,gbc);
+		
+		cbOcupacion = new JComboBox<ProfesionDTO>();
+		gbc.gridx = 1;
+		gbc.gridy = 9;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(cbOcupacion, gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
+		
+		lblNacionalidad = new JLabel("Nacionalidad (*)");
+		gbc.gridx = 3;
+		gbc.gridy = 9;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(lblNacionalidad,gbc);
 		
 		txtNacionalidad = new JTextField();
-		txtNacionalidad.setBounds(559, 369, 189, 20);
-		panel.add(txtNacionalidad);
-		txtNacionalidad.setColumns(10);
+		((AbstractDocument) txtNacionalidad.getDocument()).setDocumentFilter(filter);
+		gbc.gridx = 4;
+		gbc.gridy = 9;
+		gbc.gridwidth = 2;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.weightx = 1.0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		this.add(txtNacionalidad,gbc);
+		gbc.weightx = 0.0;
+		gbc.fill = GridBagConstraints.NONE;
 		
-		JButton btnSiguiente = new JButton("Siguiente");
-		btnSiguiente.setBounds(559, 406, 89, 23);
-		panel.add(btnSiguiente);
+		btnSiguiente = new JButton("Siguiente");
+		gbc.gridx = 4;
+		gbc.gridy = 10;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(btnSiguiente,gbc);
 		
-		JButton btnCancelar = new JButton("Cancelar");
-		btnCancelar.setBounds(658, 406, 89, 23);
-		panel.add(btnCancelar);
+		btnCancelar = new JButton("Cancelar");
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.gridx = 5;
+		gbc.gridy = 10;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		gbc.insets = new Insets(10, 10, 10, 10);
+		this.add(btnCancelar,gbc);
+		gbc.anchor = GridBagConstraints.CENTER;
 		
-		JLabel lblInfo = new JLabel("(*) Son campos Requeridos");
-		lblInfo.setBounds(10, 415, 159, 14);
-		panel.add(lblInfo);
-		
-//		JDateChooser dateChooser = new JDateChooser();
-//		dateChooser.setBounds(152, 115, 189, 20);
-//		panel.add(dateChooser);
-		
-		//Acciones de los botones
+/*		//Acciones de los botones
 		
 		//Botón Siguiente
 		//Validamos los campos
@@ -288,7 +534,43 @@ public class AltaPasajero extends JPanel {
 				
 			
 			// TODO: volver al menu anterior
-		});
+		});*/
+	}
+
+	private void llenarComboBoxLocalidades(ProvinciaDTO selectedItem) {
+		List<LocalidadDTO> listaLocalidades = selectedItem.getLocalidades();
+		cbLocalidad.removeAllItems();
+		listaLocalidades.sort((t1,t2) -> t1.getNombre().compareTo(t2.getNombre()));
+		for(LocalidadDTO unaLocalidad : listaLocalidades) {
+			cbLocalidad.addItem(unaLocalidad);
+		}
+	}
+
+	private void llenarComboBoxProvincias(PaisDTO selectedItem) {
+		List<ProvinciaDTO> listaProvincias = selectedItem.getProvincias();
+		cbProvincia.removeAllItems();
+		listaProvincias.sort((t1,t2) -> t1.getNombre().compareTo(t2.getNombre()));
+		for(ProvinciaDTO unaProvincia : listaProvincias) {
+			cbProvincia.addItem(unaProvincia);
+		}
+	}
+
+	private void llenarComboBoxPais() {
+		List<PaisDTO> listaPaises = gestorGeografico.getUbicaciones();
+		cbPais.removeAllItems();
+		listaPaises.sort((t1,t2) -> t1.getNombre().compareTo(t2.getNombre()));
+		for(PaisDTO unPais : listaPaises) {
+			cbPais.addItem(unPais);
+		}
+	}
+
+	private void llenarComboBoxTipoDocumentos() {
+		List<TipoDocumentoDTO> listaDoc = gestorPersona.getTiposDocumentos();
+		cbTipoDocumento.removeAllItems();
+		listaDoc.sort((t1,t2) -> t1.getNombre().compareTo(t2.getNombre()));
+		for(TipoDocumentoDTO unTipoDoc : listaDoc) {
+			cbTipoDocumento.addItem(unTipoDoc);
+		}
 	}
 	
 	protected void CamposVacios() {
@@ -328,12 +610,12 @@ public class AltaPasajero extends JPanel {
 		if(cbPais.getSelectedItem()== null) {
 			JOptionPane.showMessageDialog(AltaPasajero.this, "Debe seleccionar un País. Es campo requerido.");
 		}
-		if(txtProvincia.getText().isBlank()) {
+/*		if(txtProvincia.getText().isBlank()) {
 			JOptionPane.showMessageDialog(AltaPasajero.this, "El campo Provincia es requerido.");
 		}
 		if(txtLocalidad.getText().isBlank()) {
 			JOptionPane.showMessageDialog(AltaPasajero.this, "El campo Localidad es requerido.");
-		}
+		}*/
 		if(txtCodPostal.getText().isBlank()) {
 			JOptionPane.showMessageDialog(AltaPasajero.this, "El campo Código Postal es requerido.");
 		}
@@ -343,9 +625,9 @@ public class AltaPasajero extends JPanel {
 		if(txtNumero.getText().isBlank()) {
 			JOptionPane.showMessageDialog(AltaPasajero.this, "El campo Número de Teléfono es requerido.");
 		}
-		if(txtOcupacion.getText().isBlank()) {
+/*		if(txtOcupacion.getText().isBlank()) {
 			JOptionPane.showMessageDialog(AltaPasajero.this, "El campo Ocupación es requerido.");
-		}
+		}*/
 		if(txtNacionalidad.getText().isBlank()) {
 			JOptionPane.showMessageDialog(AltaPasajero.this, "El campo Nacionalidad es requerido.");
 		}
